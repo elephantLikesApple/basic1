@@ -59,6 +59,15 @@ public class HomeController {
     public List<Person> showPeople() {
         return personList;
     }
+
+    @GetMapping("/home/removePerson")
+    @ResponseBody
+    public String removePerson(@RequestParam int id) {
+        Person target = personList.stream().filter(e -> e.getId() == id).findFirst().orElse(null);
+        if(target == null) return id + "번 사람이 존재하지 않습니다.";
+        personList.remove(target);
+        return id + "번 사람이 삭제되었습니다.";
+    }
 }
 
 @AllArgsConstructor
