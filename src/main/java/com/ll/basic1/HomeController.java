@@ -68,6 +68,16 @@ public class HomeController {
         personList.remove(target);
         return id + "번 사람이 삭제되었습니다.";
     }
+
+    @GetMapping("/home/modifyPerson")
+    @ResponseBody
+    public String modifyPerson(@RequestParam int id, @RequestParam String name, @RequestParam int age) {
+        Person target = personList.stream().filter(e -> e.getId() == id).findFirst().orElse(null);
+        if(target == null) return id + "번 사람이 존재하지 않습니다.";
+        target.setName(name);
+        target.setAge(age);
+        return id + "번 사람이 수정되었습니다.";
+    }
 }
 
 @AllArgsConstructor
@@ -76,8 +86,8 @@ public class HomeController {
 class Person {
     private static int lastId = 0;
     private final int id;
-    private final int age;
-    private final String name;
+    private int age;
+    private String name;
     Person(int age, String name) {
         this(++lastId, age, name);
     }
