@@ -14,7 +14,6 @@ import java.util.List;
 @Controller
 public class HomeController {
     private int increase = -1;
-    private int id = 0;
     List<Person> personList = new ArrayList<>();
     @GetMapping("/home/main")
     @ResponseBody
@@ -50,10 +49,9 @@ public class HomeController {
     @GetMapping("/home/addPerson")
     @ResponseBody
     public String showAddPerson(@RequestParam(defaultValue = "unknown") String name, @RequestParam(defaultValue = "0") int age) {
-        id++;
-        Person target = new Person(id, name, age);
+        Person target = new Person(age, name);
         personList.add(target);
-        return id+"번 사람이 추가되었습니다.";
+        return target.getId()+"번 사람이 추가되었습니다.";
     }
 
     @GetMapping("/home/people")
@@ -67,7 +65,11 @@ public class HomeController {
 @Getter
 @Setter
 class Person {
-    int id;
-    String name;
-    int age;
+    private static int lastId = 0;
+    private final int id;
+    private final int age;
+    private final String name;
+    Person(int age, String name) {
+        this(++lastId, age, name);
+    }
 }
