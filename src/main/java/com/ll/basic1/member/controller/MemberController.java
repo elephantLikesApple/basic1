@@ -1,6 +1,7 @@
 package com.ll.basic1.member.controller;
 
 import com.ll.basic1.base.resData.ResData;
+import com.ll.basic1.base.resData.Rq;
 import com.ll.basic1.member.entity.Member;
 import com.ll.basic1.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
@@ -26,16 +27,18 @@ public class MemberController {
 
     @GetMapping("/member/login")
     @ResponseBody
-    public ResData login(String username, String password, HttpServletResponse res) {
+    public ResData login(String username, String password, HttpServletRequest req, HttpServletResponse res) {
         if(username == null || username.trim().length() == 0)
             return ResData.of("F-3", "username(을)를 입력해주세요.");
 
         if(password == null || password.trim().length() == 0)
             return ResData.of("F-4", "password(을)를 입력해주세요.");
+
         ResData response = memberService.tryLogin(username, password);
+        Rq rq = new Rq(req, res);
+
         if(response.isSuccess()){
-            long memberId = (long) response.getData();
-            res.addCookie(new Cookie("loginedMemberId", memberId+""));
+            rq.setCookie("loginedMemberId", response.getData());
         }
         return response;
     }
@@ -43,31 +46,17 @@ public class MemberController {
     @GetMapping("/member/logout")
     @ResponseBody
     public ResData logout(HttpServletRequest req, HttpServletResponse res) {
-        if(req.getCookies() != null) {
-            Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("loginedMemberId"))
-                    .forEach(cookie -> {
-                        cookie.setMaxAge(0);
-                        res.addCookie(cookie);
-                    });
-        }
+        Rq rq = new Rq(req, res);
+        rq.removeCookie("loginedMemberId");
         return ResData.of("S-1", "로그아웃 되었습니다.");
     }
 
     @GetMapping("/member/me")
     @ResponseBody
-    public ResData showMe(HttpServletRequest req) {
-        long loginedMemberId = 0L;
+    public ResData showMe(HttpServletRequest req, HttpServletResponse res) {
+        Rq rq = new Rq(req, res);
 
-        if(req.getCookies() != null) {
-            loginedMemberId = Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("loginedMemberId"))
-                    .map(Cookie::getValue)
-                    .mapToLong(Long::parseLong)
-                    .findFirst()
-                    .orElse(0);
-        }
-
+        long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
         boolean isLogined = loginedMemberId > 0;
 
         if(!isLogined) {
