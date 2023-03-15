@@ -1,4 +1,4 @@
-package com.ll.basic1;
+package com.ll.basic1.home.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class HomeController {
@@ -94,16 +92,15 @@ public class HomeController {
     @GetMapping("/home/cookie/increase")
     @ResponseBody
     public int showCookieIncrease(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        int countIntCookie = 0;
+        int counterCookie = 0;
         if(req.getCookies() != null) {
-            countIntCookie = Arrays.stream(req.getCookies())
+            counterCookie = Arrays.stream(req.getCookies())
                     .filter(cookie -> cookie.getName().equals("count"))
                     .mapToInt(cookie -> Integer.parseInt(cookie.getValue()))
-                    .findFirst()
-                    .orElse(0);
+                    .findFirst().orElse(0);
         }
-        res.addCookie(new Cookie("count", (countIntCookie+1)+""));
-        return countIntCookie+1;
+        res.addCookie(new Cookie("count", (counterCookie+1) +""));
+        return counterCookie+1;
     }
 }
 
