@@ -1,6 +1,5 @@
 package com.ll.basic1.member.repository;
 
-import com.ll.basic1.base.resData.ResData;
 import com.ll.basic1.member.entity.Member;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Repository
 public class MemberRepository {
-    List<Member> memberList;
+    private List<Member> memberList;
 
     public MemberRepository() {
         memberList = new ArrayList<>();
@@ -31,5 +30,9 @@ public class MemberRepository {
 
     public Member findByUsername(String username) {
         return memberList.stream().filter(member -> member.getUsername().equals(username)).findFirst().orElse(null);
+    }
+
+    public Member findById(long loginedMemberId) {
+        return memberList.stream().filter(e -> e.getId() == loginedMemberId).findFirst().orElse(null);
     }
 }

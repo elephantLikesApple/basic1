@@ -3,16 +3,21 @@ package com.ll.basic1.member.service;
 import com.ll.basic1.base.resData.ResData;
 import com.ll.basic1.member.entity.Member;
 import com.ll.basic1.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 
 @Service
 public class MemberService {
-    private final MemberRepository memberRepository;
-    public MemberService() {
-        memberRepository = new MemberRepository();
+    private MemberRepository memberRepository;
+
+    @Autowired
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
+
     public ResData tryLogin(String username, String password) {
         Member member = memberRepository.findByUsername(username);
 
@@ -22,6 +27,10 @@ public class MemberService {
         if(! member.getPassword().equals(password))
             return ResData.of("F-1", "비밀번호가 일치하지 않습니다.");
 
-        return ResData.of("S-1", "%s 님 환영합니다.".formatted(username));
+        return ResData.of("S-1", "%s 님 환영합니다.".formatted(username), member.getId());
+    }
+
+    public Member findById(long loginedMemberId) {
+        return memberRepository.findById(loginedMemberId);
     }
 }

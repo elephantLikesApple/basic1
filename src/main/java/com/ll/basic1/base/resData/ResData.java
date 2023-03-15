@@ -8,8 +8,17 @@ import lombok.Getter;
 public class ResData {
     private final String resultCode;
     private final String msg;
+    private final Object data;
 
     public static ResData of(String resultCode, String msg) {
-        return new ResData(resultCode, msg);
+        return of(resultCode, msg, null);
+    }
+
+    public static ResData of(String resultCode, String msg, Object data) {
+        return new ResData(resultCode, msg, data);
+    }
+
+    public boolean isSuccess() {
+        return this.getResultCode().startsWith("S-");
     }
 }
