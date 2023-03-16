@@ -62,7 +62,7 @@ public class Rq {
         }
         return false;
     }
-    public void setSession(String name, long value) {
+    public void setSession(String name, Object value) {
         HttpSession session = req.getSession();
         session.setAttribute(name, value);
     }
