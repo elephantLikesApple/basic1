@@ -1,4 +1,10 @@
 <h1>내 정보</h1>
 
-<h2>회원번호 : [[${me.id}]]</h2>
-<h2>아이디 : [[${me.username}]]</h2>
+<div th:if="${me != null}">
+    <h2>회원번호 : [[${me.id}]]</h2>
+    <h2>아이디 : [[${me.username}]]</h2>
+</div>
+
+<div th:if="${me == null}">
+    <h3>로그인 해주세요.</h3>
+</div>
