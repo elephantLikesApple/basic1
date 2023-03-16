@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,18 +47,26 @@ public class MemberController {
         rq.removeSession("loginedMemberId");
         return ResData.of("S-1", "로그아웃 되었습니다.");
     }
-
     @GetMapping("/member/me")
-    @ResponseBody
-    public ResData showMe() {
-        long loginedMemberId = rq.getSessionAsLong("loginedMemberId", 0);
-        boolean isLogined = loginedMemberId > 0;
-
-        if(!isLogined) {
-            return ResData.of("F-1", "로그인 후 이용해주세요.");
-        }
-
-        Member member = memberService.findById(loginedMemberId);
-        return ResData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUsername()));
+    public String showMe(Model model) {
+        long memberId = rq.getLoginedMemberId();
+        Member member = memberService.findById(memberId);
+        System.out.println(memberId);
+        model.addAttribute("me", member);
+        return "usr/member/me";
     }
+
+//    @GetMapping("/member/me")
+//    @ResponseBody
+//    public ResData showMe() {
+//        long loginedMemberId = rq.getSessionAsLong("loginedMemberId", 0);
+//        boolean isLogined = loginedMemberId > 0;
+//
+//        if(!isLogined) {
+//            return ResData.of("F-1", "로그인 후 이용해주세요.");
+//        }
+//
+//        Member member = memberService.findById(loginedMemberId);
+//        return ResData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUsername()));
+//    }
 }
