@@ -6,12 +6,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
 @Setter
+@Component
+@RequestScope
 public class Rq {
     private HttpServletRequest req;
     private HttpServletResponse res;

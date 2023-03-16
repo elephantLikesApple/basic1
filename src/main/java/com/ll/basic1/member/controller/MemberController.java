@@ -4,30 +4,22 @@ import com.ll.basic1.base.resData.ResData;
 import com.ll.basic1.base.resData.Rq;
 import com.ll.basic1.member.entity.Member;
 import com.ll.basic1.member.service.MemberService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 @Controller
+@AllArgsConstructor
 public class MemberController {
     private MemberService memberService;
-
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final Rq rq;
 
     @GetMapping("/member/login")
     @ResponseBody
-    public ResData login(String username, String password, HttpServletRequest req, HttpServletResponse res) {
+    public ResData login(String username, String password) {
         if(username == null || username.trim().length() == 0)
             return ResData.of("F-3", "username(을)를 입력해주세요.");
 
@@ -35,7 +27,6 @@ public class MemberController {
             return ResData.of("F-4", "password(을)를 입력해주세요.");
 
         ResData response = memberService.tryLogin(username, password);
-        Rq rq = new Rq(req, res);
 
         if(response.isSuccess()){
             rq.setCookie("loginedMemberId", response.getData());
@@ -45,17 +36,14 @@ public class MemberController {
 
     @GetMapping("/member/logout")
     @ResponseBody
-    public ResData logout(HttpServletRequest req, HttpServletResponse res) {
-        Rq rq = new Rq(req, res);
+    public ResData logout() {
         rq.removeCookie("loginedMemberId");
         return ResData.of("S-1", "로그아웃 되었습니다.");
     }
 
     @GetMapping("/member/me")
     @ResponseBody
-    public ResData showMe(HttpServletRequest req, HttpServletResponse res) {
-        Rq rq = new Rq(req, res);
-
+    public ResData showMe() {
         long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
         boolean isLogined = loginedMemberId > 0;
 
