@@ -43,15 +43,16 @@ public class Rq {
 
     public boolean removeCookie(String cookieName) {
         if(this.req.getCookies() != null) {
-            Arrays.stream(this.req.getCookies())
-                    .filter(cookie -> cookie.getName().equals(cookieName))
-                    .forEach(cookie -> {
-                        cookie.setMaxAge(0);
-                        this.res.addCookie(cookie);
-                    });
-            return Arrays.stream(this.req.getCookies())
-                    .filter(cookie -> cookie.getName().equals(cookieName))
-                    .count() > 0;
+            Cookie cookie = Arrays.stream(req.getCookies())
+                    .filter(c ->c.getName().equals(cookieName))
+                    .findFirst()
+                    .orElse(null);
+
+            if(cookie != null) {
+                cookie.setMaxAge(0);
+                res.addCookie(cookie);
+                return true;
+            }
         }
         return false;
     }
