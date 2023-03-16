@@ -29,7 +29,8 @@ public class MemberController {
         ResData response = memberService.tryLogin(username, password);
 
         if(response.isSuccess()){
-            rq.setCookie("loginedMemberId", response.getData());
+            Member member = (Member) response.getData();
+            rq.setSession("loginedMemberId", member.getId());
         }
         return response;
     }
@@ -37,14 +38,14 @@ public class MemberController {
     @GetMapping("/member/logout")
     @ResponseBody
     public ResData logout() {
-        rq.removeCookie("loginedMemberId");
+        rq.removeSession("loginedMemberId");
         return ResData.of("S-1", "로그아웃 되었습니다.");
     }
 
     @GetMapping("/member/me")
     @ResponseBody
     public ResData showMe() {
-        long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
+        long loginedMemberId = rq.getSessionAsLong("loginedMemberId", 0);
         boolean isLogined = loginedMemberId > 0;
 
         if(!isLogined) {
@@ -53,5 +54,12 @@ public class MemberController {
 
         Member member = memberService.findById(loginedMemberId);
         return ResData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUsername()));
+    }
+
+    // 디버깅용 함수
+    @GetMapping("/member/session")
+    @ResponseBody
+    public String showSession() {
+        return rq.getSessionDebugContents().replaceAll("\n", "<br>");
     }
 }
