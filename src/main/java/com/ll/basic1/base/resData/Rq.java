@@ -20,32 +20,28 @@ public class Rq {
         this.res.addCookie(new Cookie(cookieName, cookieValue+""));
     }
 
-    public String getCookie(String cookieName, String defualtValue) {
-        String targetCookie = defualtValue;
-        if(this.req.getCookies() != null) {
-            targetCookie = Arrays.stream(this.req.getCookies())
-                    .filter(cookie -> cookie.getName().equals(cookieName))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(defualtValue);
-        }
-        return targetCookie;
+    public String getCookie(String cookieName, String defaultValue) {
+        if (req.getCookies() == null) return defaultValue;
+
+        return Arrays.stream(req.getCookies())
+                .filter(cookie -> cookie.getName().equals(cookieName))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(defaultValue);
     }
 
-    public long getCookieAsLong(String cookieName, long defualtValue) {
-        long targetCookie = defualtValue;
-        if(this.req.getCookies() != null) {
-            targetCookie = Arrays.stream(this.req.getCookies())
-                    .filter(cookie -> cookie.getName().equals(cookieName))
-                    .map(Cookie::getValue)
-                    .mapToLong(Long::parseLong)
-                    .findFirst()
-                    .orElse(defualtValue);
+    public Long getCookieAsLong(String cookieName, long defualtValue) {
+        String value = getCookie(cookieName, null);
+
+        if (value == null) return defualtValue;
+        try {
+            return Long.parseLong(value);
+        } catch (Exception e) {
+            return defualtValue;
         }
-        return targetCookie;
     }
 
-    public void removeCookie(String cookieName) {
+    public boolean removeCookie(String cookieName) {
         if(this.req.getCookies() != null) {
             Arrays.stream(this.req.getCookies())
                     .filter(cookie -> cookie.getName().equals(cookieName))
@@ -53,6 +49,10 @@ public class Rq {
                         cookie.setMaxAge(0);
                         this.res.addCookie(cookie);
                     });
+            return Arrays.stream(this.req.getCookies())
+                    .filter(cookie -> cookie.getName().equals(cookieName))
+                    .count() > 0;
         }
+        return false;
     }
 }
