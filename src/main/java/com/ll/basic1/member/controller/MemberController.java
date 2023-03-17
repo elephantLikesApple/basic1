@@ -36,7 +36,8 @@ public class MemberController {
         ResData response = memberService.tryLogin(username, password);
 
         if(response.isSuccess()){
-            rq.setSession("loginedMemberId", response.getData());
+            Member member = (Member) response.getData();
+            rq.setSession("loginedMemberId", member.getId());
         }
         return response;
     }

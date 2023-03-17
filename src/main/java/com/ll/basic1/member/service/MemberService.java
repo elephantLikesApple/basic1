@@ -27,7 +27,7 @@ public class MemberService {
         if(! member.getPassword().equals(password))
             return ResData.of("F-1", "비밀번호가 일치하지 않습니다.");
 
-        return ResData.of("S-1", "%s 님 환영합니다.".formatted(username), member.getId());
+        return ResData.of("S-1", "%s 님 환영합니다.".formatted(username), member);
     }
 
     public Member findById(long loginedMemberId) {
