@@ -3,7 +3,7 @@ package com.ll.basic1.member.service;
 import com.ll.basic1.base.resData.ResData;
 import com.ll.basic1.member.entity.Member;
 import com.ll.basic1.member.repository.MemberRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +32,16 @@ public class MemberService {
 
     public Member findById(long loginedMemberId) {
         return memberRepository.findById(loginedMemberId).orElse(null);
+    }
+
+    public Member join(String username, String password) {
+        Member member = Member.builder()
+                .username(username)
+                .password(password)
+                .build();
+
+        memberRepository.save(member);
+
+        return member;
     }
 }

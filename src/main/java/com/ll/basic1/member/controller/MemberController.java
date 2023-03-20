@@ -1,7 +1,7 @@
 package com.ll.basic1.member.controller;
 
 import com.ll.basic1.base.resData.ResData;
-import com.ll.basic1.base.resData.Rq;
+import com.ll.basic1.base.rq.Rq;
 import com.ll.basic1.member.entity.Member;
 import com.ll.basic1.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
